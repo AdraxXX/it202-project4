@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Activity 9.2</title>
+  <link href="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+  <style>
+    :root {
+      --mdc-theme-primary: navy;
+    }
+
+    body {margin: 0;}
+    main {margin-left: 8px;}
+    .view
+    {
+      display: none;
+    }
+    #homeScreen
+      {
+          display: block;
+      }
+    #resetList
+      {
+          display: none;
+      }
+  </style>
+
+  </head>
+  <body>  
+
+<header class="mdc-top-app-bar">
+  <div class="mdc-top-app-bar__row">
+    <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+      <span class="mdc-top-app-bar__title">COVID-19 Data Tool</span>
+    </section>
+    <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end" role="toolbar">
+      <button class="material-icons mdc-top-app-bar__action-item mdc-icon-button" aria-label="Home" id="home">home</button>
+      <button class="material-icons mdc-top-app-bar__action-item mdc-icon-button" aria-label="Table" id="table">border_all</button>
+      <button class="material-icons mdc-top-app-bar__action-item mdc-icon-button" aria-label="Chart" id="chart">multiline_chart</button>
+    </section>
+  </div>
+</header>
+
+
+
+  <main class="mdc-top-app-bar--fixed-adjust">
+    <div class="view" id="homeScreen">
+        <h1>Home</h1>
+        <input list="countries">
+
+        <datalist id="countries">
+            <option value="Internet Explorer">
+            <option value="Firefox">
+            <option value="Chrome">
+            <option value="Opera">
+            <option value="Safari">
+        </datalist>
+        <button class="mdc-button foo-button mdc-button--raised" id="addCountry">
+            <div class="mdc-button__ripple"></div>
+            <span class="mdc-button__label">Add Country</span>
+        </button>
+        <button class="mdc-button foo-button mdc-button--raised" id="resetList">
+            <div class="mdc-button__ripple"></div>
+            <span class="mdc-button__label">Clear List</span>
+        </button>
+        <ul class="mdc-list" id="listOfCountries">
+        </ul>
+    </div>
+    <div class="view" id="tableScreen">
+        <h1>Date Table of Countries by Date</h1>
+    </div>
+    <div class="view" id="chartScreen">
+        <h1>Chart of Countries by Date</h1>
+    </div>
+  </main>
+
+
+  <script>
+    mdc.ripple.MDCRipple.attachTo(document.querySelector('.foo-button'));
+
+    mdc.topAppBar.MDCTopAppBar.attachTo(document.querySelector('header.mdc-top-app-bar'));
+
+    document.querySelectorAll('button.mdc-top-app-bar__action-item').forEach(item => {
+        
+        item.addEventListener('click', event => 
+        {
+            document.querySelectorAll('.view').forEach(screen => 
+            {
+                if(screen.id === item.id + 'Screen')
+                    screen.style.display = "block";
+                else
+                    screen.style.display = "none";
+            });
+        })
+    })
+      
+    document.querySelector('#addCountry').addEventListener('click', event =>
+    {
+        if(document.querySelector('#listOfCountries').querySelector('#' + document.querySelector('input').value.replace(' ','')) == null)
+        {
+            let newListItem = document.createElement('li');
+            newListItem.classList = "mdc-list-item mdc-ripple-upgraded";
+            newListItem.id = document.querySelector('input').value.replace(' ','');
+            newListItem.textContent = document.querySelector('input').value;
+            let newButton = document.createElement('button');
+            newButton.classList = "mdc-list-item__meta material-icons";
+            newButton.textContent = "remove";
+            newListItem.appendChild(newButton);
+            document.querySelector('#listOfCountries').appendChild(newListItem);
+            newButton.addEventListener('click', event =>
+            {
+                document.querySelector('#listOfCountries').removeChild(newButton.parentNode);
+                if(document.querySelector('#listOfCountries').children.length == 0)
+                {
+                    document.querySelector('#resetList').style.display = "none";
+                }
+            })
+            document.querySelector('#resetList').style.display = "block";
+        }
+    });
+    
+    document.querySelector('#resetList').addEventListener('click', event =>
+    {
+        document.querySelectorAll('.mdc-list-item').forEach(listItem =>
+        {
+            document.querySelector('#listOfCountries').removeChild(listItem);
+        })
+        document.querySelector('#resetList').style.display = "none";
+    })
+    </script>
+  </body>
+</html>
